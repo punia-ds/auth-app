@@ -2,8 +2,24 @@ import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function Profile() {
-  const { logout, user, isAuthenticated, isLoading } = useAuth0();
-  console.log(user);
+  const { logout, user, isAuthenticated, isLoading,getAccessTokenSilently } = useAuth0();
+  const sendTokenToBackend = async () => {
+    try {
+      if (isAuthenticated) {
+        const token = await getAccessTokenSilently();
+        console.log("Access Token:", token);
+
+        await axios.post("http://localhost:5000/auth/callback", { token });
+
+        alert("Token sent to backend!");
+      }
+    } catch (error) {
+      console.error("Error getting token:", error);
+    }
+  };
+  useEffect(() => {
+    sendTokenToBackend();
+  }, [isAuthenticated, getAccessTokenSilently]);
   if (!isAuthenticated) {
     return null;
   }
