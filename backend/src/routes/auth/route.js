@@ -3,6 +3,6 @@ import express from "express";
 
 const authRouter = express.Router();
 
-authRouter.post("/auth/callback",auth);
+authRouter.post("/callback",auth);
 
 export default authRouter;

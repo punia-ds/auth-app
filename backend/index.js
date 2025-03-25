@@ -1,14 +1,16 @@
 import express from "express";
 import cors from 'cors';
-import authRouter from "./src/routes/auth/routes.js";
+import authRouter from "./src/routes/auth/route.js";
 
 const app=express();
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.use(authRouter);
+app.use("/auth",authRouter);
 
 
-
+app.get("/api/test", (req,res)=>{
+    res.send("API is working")
+})
 
 
 

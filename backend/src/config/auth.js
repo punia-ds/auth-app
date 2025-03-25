@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
+const domain = "dev-qzwvwtx3l5tftscs.us.auth0.com";
 
 async function validateToken(token) {
   try {
-    const response = await axios.get(`https://${AUTH0_DOMAIN}/userinfo`, {
+    const response = await axios.get(`https://${domain}/userinfo`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.log(error.message);
   }

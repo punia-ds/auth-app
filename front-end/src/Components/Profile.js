@@ -1,17 +1,23 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Profile() {
-  const { logout, user, isAuthenticated, isLoading,getAccessTokenSilently } = useAuth0();
+  const [responsemsg, setReponseMsg] = useState(null);
+  const [email,setEmail] = useState(null);
+  const { logout, user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
+// api call for authentication and sending mail
   const sendTokenToBackend = async () => {
     try {
       if (isAuthenticated) {
         const token = await getAccessTokenSilently();
-        console.log("Access Token:", token);
-
-        await axios.post("http://localhost:5000/auth/callback", { token });
-
-        alert("Token sent to backend!");
+        let reponse = await axios.post("http://localhost:8080/auth/callback", {
+          token,
+        });
+        setReponseMsg(reponse?.data?.message);
+        setEmail(reponse?.data?.email);
       }
     } catch (error) {
       console.error("Error getting token:", error);
@@ -19,7 +25,8 @@ function Profile() {
   };
   useEffect(() => {
     sendTokenToBackend();
-  }, [isAuthenticated, getAccessTokenSilently]);
+  }, [isAuthenticated]);
+
   if (!isAuthenticated) {
     return null;
   }
@@ -40,6 +47,11 @@ function Profile() {
             <h2 className="text-primary">{user.nickname}</h2>
             <p className="text-muted">{user.email}</p>
           </div>
+          {responsemsg && (
+            <div className="alert alert-success" role="alert">
+              {responsemsg}  {email&&(<div className="alert">to {email}</div>)}
+            </div>
+          )}
           <button className="btn btn-danger" onClick={() => logout()}>
             Log Out
           </button>
